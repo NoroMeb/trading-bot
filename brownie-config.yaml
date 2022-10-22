@@ -1,0 +1,4 @@
+dotenv: .env
+networks:
+  default: mainnet-fork
+dev_deployment_artifacts: True
