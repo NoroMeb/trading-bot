@@ -35,12 +35,18 @@ contract DyDxFlashLoan is Structs {
         uint256 amount,
         bytes memory data
     ) internal {
+        /* we approve to the pool contract to take back the loan amount from the contract */
         IERC20(token).approve(address(pool), amount + 1);
+
         Info[] memory infos = new Info[](1);
         ActionArgs[] memory args = new ActionArgs[](3);
 
         infos[0] = Info(address(this), 0);
 
+        /* there is no flashloan function in DyDx pool contract, 
+        theere is only operate function who take the action we need to execute,
+        we call it and with withdraw, call, and deposit to flashloan and
+        do all transaction in the same transaction  */
         AssetAmount memory wamt = AssetAmount(
             false,
             AssetDenomination.Wei,
@@ -79,7 +85,7 @@ contract DyDxFlashLoan is Structs {
         deposit.otherAddress = address(this);
 
         args[2] = deposit;
-
+        /* we call the operate function in the pool contract with infos and args array */
         pool.operate(infos, args);
     }
 }
